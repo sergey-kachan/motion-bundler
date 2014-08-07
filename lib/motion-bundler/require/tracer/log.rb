@@ -32,8 +32,8 @@ module MotionBundler
         def register(file, path)
           return if !file.match(/^([A-Z]+)$/) && !file.match(/^(.*\.rb):(\d+)/)
 
-          file = $1.include?("/bundler/") ? "BUNDLER" : $1
-          line = $1.include?("/bundler/") ? nil : $2
+          file = $1.include?("/lib/bundler/") ? "BUNDLER" : $1
+          line = $1.include?("/lib/bundler/") ? nil : $2
 
           (@requires[[file, line].compact.join(":")] ||= []) << path
           dependencies = (@files_dependencies[file] ||= [])

@@ -28,7 +28,7 @@ module Unit
             @log.instance_variable_set :@files_dependencies, {"/Sources/lib/file1.rb" => ["file0"]}
             @log.instance_variable_set :@requires, {"/Sources/lib/file1.rb:47" => ["file0"]}
 
-            @log.register "/.rvm/gems/bundler/bundler.rb:63", "foo" do
+            @log.register "/.rvm/gems/bundler/lib/bundler/bundler.rb:63", "foo" do
               @log.register "/Sources/lib/file1.rb:129:in `<module:Foo>'", "file2" do
                 @log.register "/Sources/lib/file2.rb:1", "file3" do
                   @log.register "/Sources/lib/file2.rb:2", "file4" do
