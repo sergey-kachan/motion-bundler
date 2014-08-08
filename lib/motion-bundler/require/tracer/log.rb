@@ -9,12 +9,14 @@ module MotionBundler
           @files = Set.new
           @files_dependencies = {}
           @requires = {}
+          @features = {}
         end
 
         def clear
           @files.clear
           @files_dependencies.clear
           @requires.clear
+          @features.clear
         end
 
         def files
@@ -43,16 +45,21 @@ module MotionBundler
             loaded_feature = loaded_features.last
             @files << file unless @files.include? file
             @files << loaded_feature
+            @features[path] = loaded_feature
             dependencies.insert index, loaded_feature
           else
-            @files_dependencies.delete file if dependencies.empty?
-            if file.match(/^([A-Z]+)$/)
-              if $CLI
-                ripper = Require::Ripper.new [path], "/"
-                merge! ripper.files, ripper.files_dependencies, ripper.requires
-              else
-                tracer = YAML.load `motion-bundler trace #{path}`
-                merge! *tracer.values_at("FILES", "FILES_DEPENDENCIES", "REQUIRES")
+            if @features[path]
+              dependencies.insert index, @features[path]
+            else
+              @files_dependencies.delete file if dependencies.empty?
+              if file.match(/^([A-Z]+)$/)
+                if $CLI
+                  ripper = Require::Ripper.new [path], "/"
+                  merge! ripper.files, ripper.files_dependencies, ripper.requires
+                else
+                  tracer = YAML.load `motion-bundler trace #{path}`
+                  merge! *tracer.values_at("FILES", "FILES_DEPENDENCIES", "REQUIRES")
+                end
               end
             end
           end
